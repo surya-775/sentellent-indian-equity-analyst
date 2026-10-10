@@ -15,7 +15,7 @@ resource "aws_lb" "main" {
 
 # Backend Target Group
 resource "aws_lb_target_group" "backend" {
-  name        = "${var.app_name}-tg-backend"
+  name        = "iea-tg-backend"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
@@ -38,7 +38,7 @@ resource "aws_lb_target_group" "backend" {
 
 # Frontend Target Group
 resource "aws_lb_target_group" "frontend" {
-  name        = "${var.app_name}-tg-frontend"
+  name        = "iea-tg-frontend"
   port        = 3000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
