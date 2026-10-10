@@ -62,17 +62,23 @@ class VectorStoreService:
             vec = vec / norm
         return vec.tolist()
 
-    def cosine_similarity(self, v1: List[float], v2: List[float]) -> float:
-        if not v1 or not v2:
+    def cosine_similarity(self, v1: Any, v2: Any) -> float:
+        if v1 is None or v2 is None:
             return 0.0
-        a = np.array(v1, dtype=np.float32)
-        b = np.array(v2, dtype=np.float32)
-        dot = np.dot(a, b)
-        norm_a = np.linalg.norm(a)
-        norm_b = np.linalg.norm(b)
-        if norm_a == 0 or norm_b == 0:
+        try:
+            a = np.asarray(v1, dtype=np.float32)
+            b = np.asarray(v2, dtype=np.float32)
+            if a.size == 0 or b.size == 0:
+                return 0.0
+            dot = float(np.dot(a, b))
+            norm_a = float(np.linalg.norm(a))
+            norm_b = float(np.linalg.norm(b))
+            if norm_a == 0.0 or norm_b == 0.0:
+                return 0.0
+            return dot / (norm_a * norm_b)
+        except Exception as e:
+            logger.warning(f"Error calculating cosine similarity: {e}")
             return 0.0
-        return float(dot / (norm_a * norm_b))
 
     def search_articles(
         self,
@@ -97,16 +103,17 @@ class VectorStoreService:
         scored_articles = []
         for art in all_articles:
             art_vec = art.embedding
-            if isinstance(art_vec, str):
-                try:
-                    art_vec = json.loads(art_vec)
-                except Exception:
-                    art_vec = None
+            if art_vec is not None:
+                if isinstance(art_vec, str):
+                    try:
+                        art_vec = json.loads(art_vec)
+                    except Exception:
+                        art_vec = None
             
-            sim = self.cosine_similarity(query_vec, art_vec) if art_vec else 0.0
+            sim = self.cosine_similarity(query_vec, art_vec) if art_vec is not None else 0.0
             
             # Boost if exact ticker or key term in title
-            if ticker and ticker.lower() in art.title.lower():
+            if ticker and art.title and ticker.lower() in art.title.lower():
                 sim += 0.15
 
             scored_articles.append({

@@ -305,8 +305,7 @@ export default function Navbar() {
                 <GoogleIcon />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-100 text-base">Google OAuth 2.0 Sign In</h3>
-                <p className="text-xs text-slate-400">Strict Verification via Google OAuth API</p>
+                <h3 className="font-semibold text-slate-100 text-base">Sign in with Google</h3>
               </div>
             </div>
 
@@ -414,10 +413,6 @@ export default function Navbar() {
                   Whitelisted Test User
                 </span>
               </button>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 leading-relaxed">
-              <span className="font-semibold text-amber-400">Google Cloud Console Note:</span> If popup displays <code>Error 400: origin_mismatch</code>, add <code>http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com</code> under <strong>Authorized JavaScript origins</strong> in your Google Cloud OAuth Client ID.
             </div>
           </div>
         </div>

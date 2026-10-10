@@ -170,34 +170,64 @@ def chat_with_agent(
     if not user_msg:
         raise HTTPException(status_code=400, detail="Empty query")
 
-    # Save user message
-    db.add(ChatMessage(
-        session_id=payload.session_id,
-        user_id=user.id,
-        role="user",
-        content=user_msg
-    ))
-    db.commit()
+    try:
+        # Save user message
+        db.add(ChatMessage(
+            session_id=payload.session_id,
+            user_id=user.id,
+            role="user",
+            content=user_msg
+        ))
+        db.commit()
 
-    # Run LangGraph Agent
-    result = equity_agent.run(db, user_id=user.id, query=user_msg, session_id=payload.session_id)
+        # Run LangGraph Agent
+        result = equity_agent.run(db, user_id=user.id, query=user_msg, session_id=payload.session_id)
 
-    # Save assistant message with citations
-    db.add(ChatMessage(
-        session_id=payload.session_id,
-        user_id=user.id,
-        role="assistant",
-        content=result["response"],
-        citations=result["citations"]
-    ))
-    db.commit()
+        # Save assistant message with citations
+        db.add(ChatMessage(
+            session_id=payload.session_id,
+            user_id=user.id,
+            role="assistant",
+            content=result["response"],
+            citations=result["citations"]
+        ))
+        db.commit()
 
-    return {
-        "reply": result["response"],
-        "citations": result["citations"],
-        "intent": result["intent"],
-        "ticker": result["ticker"]
-    }
+        return {
+            "reply": result["response"],
+            "citations": result["citations"],
+            "intent": result["intent"],
+            "ticker": result["ticker"]
+        }
+    except Exception as e:
+        logger.exception(f"Error during agent chat execution: {e}")
+        db.rollback()
+        # Grounded fallback lookup for stock queries
+        ticker = equity_agent._extract_ticker(user_msg)
+        if ticker:
+            fund = agent_tools.get_stock_fundamentals(db, ticker)
+            if fund:
+                reply = (
+                    f"Grounded Indian Equity Analysis: {ticker}\n\n"
+                    f"Fundamentals (NSE/BSE & Screener.in):\n"
+                    f"- Current Quote: {fund['current_price_inr']}\n"
+                    f"- Market Capitalization: {fund['market_cap_inr']}\n"
+                    f"- Valuation (P/E): {fund['pe_ratio']} | Debt-to-Equity: {fund['debt_to_equity']}\n"
+                    f"- Dividend Yield: {fund['dividend_yield_pct']} | ROCE: {fund['roce_pct']} | ROE: {fund['roe_pct']}\n"
+                    f"- Rolling News Sentiment: {fund['sentiment_label']} (Score: {fund['rolling_sentiment']})\n"
+                )
+                return {
+                    "reply": reply,
+                    "citations": [{
+                        "title": f"{ticker} Consolidated Fundamentals",
+                        "url": f"https://www.screener.in/company/{ticker}/",
+                        "source": "Screener.in & NSE",
+                        "type": "fundamentals"
+                    }],
+                    "intent": "stock_query",
+                    "ticker": ticker
+                }
+        raise HTTPException(status_code=500, detail=f"Agent service error: {str(e)}")
 
 @router.get("/chat/history")
 def get_chat_history(
