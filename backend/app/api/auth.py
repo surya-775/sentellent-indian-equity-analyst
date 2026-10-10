@@ -132,11 +132,11 @@ async def google_login(payload: GoogleAuthRequest, db: Session = Depends(get_db)
         clean_email = payload.email.strip().lower()
         if clean_email in whitelisted_test_emails:
             email = clean_email
-            name = payload.name or ("Hari Sankar" if "harisankar" in clean_email else "Naga")
+            name = payload.name or ("Hari Sankar" if "harisankar" in clean_email else "Naga" if "naga" in clean_email else "Jaya Surya")
         else:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Direct login without Google token is strictly restricted to Sentellent test users (harisankar@sentellent.com, naga@sentellent.com). For all other accounts, sign in with verified Google OAuth."
+                detail="Direct login without Google token is strictly restricted to whitelisted test users (harisankar@sentellent.com, naga@sentellent.com, jayasurya71256@gmail.com). For all other accounts, sign in with verified Google OAuth."
             )
 
     else:

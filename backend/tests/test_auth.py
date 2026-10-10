@@ -47,11 +47,18 @@ def test_whitelisted_test_user_allowed():
     assert data["user"]["email"] == "naga@sentellent.com"
     assert data["user"]["is_test_user"] is True
 
+    # jayasurya71256@gmail.com
+    res = client.post("/api/auth/google", json={"email": "jayasurya71256@gmail.com"})
+    assert res.status_code == 200
+    data = res.json()
+    assert data["user"]["email"] == "jayasurya71256@gmail.com"
+    assert data["user"]["is_test_user"] is True
+
 def test_arbitrary_unverified_email_strictly_rejected():
     # Any random unverified email without a Google OAuth token MUST be rejected with 401
     res = client.post("/api/auth/google", json={"email": "randomuser@gmail.com"})
     assert res.status_code == 401
-    assert "strictly restricted to Sentellent test users" in res.json()["detail"]
+    assert "strictly restricted to" in res.json()["detail"]
 
     res = client.post("/api/auth/google", json={"email": "attacker@evil.com"})
     assert res.status_code == 401

@@ -31,7 +31,8 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
     TEST_USERS: List[str] = [
         "harisankar@sentellent.com",
-        "naga@sentellent.com"
+        "naga@sentellent.com",
+        "jayasurya71256@gmail.com"
     ]
     
     # CORS

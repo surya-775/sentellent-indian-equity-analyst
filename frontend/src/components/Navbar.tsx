@@ -392,6 +392,32 @@ export default function Navbar() {
                   Whitelisted Test User
                 </span>
               </button>
+
+              {/* Jaya Surya */}
+              <button
+                disabled={isLoading}
+                onClick={() => handleTestUserLogin("jayasurya71256@gmail.com", "Jaya Surya")}
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-violet-500/50 transition-all text-left group active:scale-98"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow">
+                    J
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-slate-200 group-hover:text-violet-400 transition-colors">
+                      Jaya Surya
+                    </div>
+                    <div className="text-[11px] text-slate-400">jayasurya71256@gmail.com</div>
+                  </div>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/30">
+                  Whitelisted Test User
+                </span>
+              </button>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 leading-relaxed">
+              <span className="font-semibold text-amber-400">Google Cloud Console Note:</span> If popup displays <code>Error 400: origin_mismatch</code>, add <code>http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com</code> under <strong>Authorized JavaScript origins</strong> in your Google Cloud OAuth Client ID.
             </div>
           </div>
         </div>
