@@ -20,7 +20,7 @@ export default function ChatInterface({ onPersonaUpdated }: ChatInterfaceProps) 
     {
       role: "assistant",
       content:
-        "Hello! I am your **Personal Agentic AI Indian-Equity Analyst** for the NSE & BSE. I ingest real-time fundamentals from Screener and Indian financial news into pgvector, learn your investment persona dynamically, and deliver strictly grounded, cited insights in INR.\n\nTry updating your persona or asking for research on followed stocks!",
+        "Hello! I am your Personal Agentic AI Indian-Equity Analyst for the NSE & BSE. I ingest real-time fundamentals from Screener and Indian financial news into pgvector, learn your investment persona dynamically, and deliver strictly grounded, cited insights in INR.\n\nTry updating your persona or asking for research on followed stocks!",
       citations: []
     }
   ]);

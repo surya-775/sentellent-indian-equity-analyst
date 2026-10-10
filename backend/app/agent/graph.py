@@ -147,11 +147,11 @@ class IndianEquityAgentGraph:
             rules_str = ", ".join(persona.learned_rules) if persona.learned_rules else "Standard parameters"
             state["response_text"] = (
                 f"Understood. I have updated your investor profile and memory:\n\n"
-                f"- **Risk Tolerance**: {persona.risk_tolerance}\n"
-                f"- **Investment Style**: {persona.investment_style}\n"
-                f"- **Max Debt-to-Equity**: {persona.max_debt_to_equity}\n"
-                f"- **Min Dividend Yield**: {persona.min_dividend_yield}%\n"
-                f"- **Active Rules**: {rules_str}\n\n"
+                f"- Risk Tolerance: {persona.risk_tolerance}\n"
+                f"- Investment Style: {persona.investment_style}\n"
+                f"- Max Debt-to-Equity: {persona.max_debt_to_equity}\n"
+                f"- Min Dividend Yield: {persona.min_dividend_yield}%\n"
+                f"- Active Rules: {rules_str}\n\n"
                 f"Your memory graph and persona vector have been updated. Any future recommendations or screening queries will screen out non-compliant stocks accordingly."
             )
             state["citations"] = []
@@ -166,17 +166,17 @@ class IndianEquityAgentGraph:
                 )
             else:
                 lines = [
-                    f"### Personalised Indian Equity Recommendations for Your Profile\n",
-                    f"**Persona Applied**: {persona.risk_tolerance} Risk | {persona.investment_style} Style | Max D/E: {persona.max_debt_to_equity} | Min Div: {persona.min_dividend_yield}%\n"
+                    f"Personalised Indian Equity Recommendations for Your Profile:\n",
+                    f"Persona Applied: {persona.risk_tolerance} Risk | {persona.investment_style} Style | Max D/E: {persona.max_debt_to_equity} | Min Div: {persona.min_dividend_yield}%\n"
                 ]
                 for idx, r in enumerate(recs[:4], start=1):
                     lines.append(
-                        f"**{idx}. {r['ticker']}** ({r['name']})\n"
-                        f"- **Current Price**: {r['current_price_inr']} | **Market Cap**: {r['market_cap_inr']}\n"
-                        f"- **Ratios**: P/E: {r['pe_ratio']} | Debt-to-Equity: {r['debt_to_equity']} | Dividend Yield: {r['dividend_yield_pct']}%\n"
-                        f"- **Rolling Sentiment**: {r['sentiment_label']}\n"
-                        f"- **Rationale**: {r['reason']}\n"
-                        f"- *Source Citation*: [{r['citation']['title']}]({r['citation']['url']}) ({r['citation']['source']})\n"
+                        f"{idx}. {r['ticker']} ({r['name']})\n"
+                        f"- Current Price: {r['current_price_inr']} | Market Cap: {r['market_cap_inr']}\n"
+                        f"- Ratios: P/E: {r['pe_ratio']} | Debt-to-Equity: {r['debt_to_equity']} | Dividend Yield: {r['dividend_yield_pct']}%\n"
+                        f"- Rolling Sentiment: {r['sentiment_label']}\n"
+                        f"- Rationale: {r['reason']}\n"
+                        f"- Source Citation: [{r['citation']['title']}]({r['citation']['url']}) ({r['citation']['source']})\n"
                     )
                     citations.append({
                         "title": r['citation']['title'],
@@ -192,15 +192,15 @@ class IndianEquityAgentGraph:
             news = state.get("retrieved_articles", [])
             ticker = state.get("ticker_mentioned", "")
 
-            lines = [f"### Grounded Indian Equity Analysis: {ticker}\n"]
+            lines = [f"Grounded Indian Equity Analysis: {ticker}\n"]
             if fund:
                 lines.append(
-                    f"**Fundamentals (NSE/BSE & Screener.in)**:\n"
-                    f"- **Current Quote**: {fund['current_price_inr']}\n"
-                    f"- **Market Capitalization**: {fund['market_cap_inr']}\n"
-                    f"- **Valuation (P/E)**: {fund['pe_ratio']} | **Debt-to-Equity**: {fund['debt_to_equity']}\n"
-                    f"- **Dividend Yield**: {fund['dividend_yield_pct']} | **ROCE**: {fund['roce_pct']} | **ROE**: {fund['roe_pct']}\n"
-                    f"- **Rolling News Sentiment**: **{fund['sentiment_label']}** (Score: {fund['rolling_sentiment']})\n"
+                    f"Fundamentals (NSE/BSE & Screener.in):\n"
+                    f"- Current Quote: {fund['current_price_inr']}\n"
+                    f"- Market Capitalization: {fund['market_cap_inr']}\n"
+                    f"- Valuation (P/E): {fund['pe_ratio']} | Debt-to-Equity: {fund['debt_to_equity']}\n"
+                    f"- Dividend Yield: {fund['dividend_yield_pct']} | ROCE: {fund['roce_pct']} | ROE: {fund['roe_pct']}\n"
+                    f"- Rolling News Sentiment: {fund['sentiment_label']} (Score: {fund['rolling_sentiment']})\n"
                 )
                 citations.append({
                     "title": f"{ticker} Consolidated Fundamentals",
@@ -210,13 +210,13 @@ class IndianEquityAgentGraph:
                 })
 
             if news:
-                lines.append(f"**Recent Grounded News & Market Developments**:")
+                lines.append(f"Recent Grounded News & Market Developments:")
                 for n in news[:3]:
                     lines.append(
-                        f"- **{n['title']}**\n"
-                        f"  *Source*: {n['source']} | *Sentiment Impact*: **{n['sentiment_impact']}** (Score: {n['sentiment_score']})\n"
-                        f"  *Summary*: {n['summary']}\n"
-                        f"  *Citation Link*: [{n['title']}]({n['url']})\n"
+                        f"- {n['title']}\n"
+                        f"  Source: {n['source']} | Sentiment Impact: {n['sentiment_impact']} (Score: {n['sentiment_score']})\n"
+                        f"  Summary: {n['summary']}\n"
+                        f"  Citation Link: [{n['title']}]({n['url']})\n"
                     )
                     citations.append({
                         "title": n['title'],
@@ -230,14 +230,15 @@ class IndianEquityAgentGraph:
 
         else: # general_query
             state["response_text"] = (
-                "Welcome to your **Personal Agentic AI Indian-Equity Analyst**. You can:\n\n"
-                "1. **Follow/Ingest Tickers**: Add NSE/BSE stocks like `RELIANCE`, `TCS`, `HDFCBANK`, or `INFY` to fetch fundamentals & Indian financial news.\n"
-                "2. **Ask Grounded Stock Questions**: e.g., *'What's the sentiment on TCS this week?'* or *'Show me Reliance's debt and dividend metrics'*.\n"
-                "3. **Train Your Persona**: e.g., *'I'm a conservative, dividend-focused investor and I avoid high-debt companies'*.\n"
-                "4. **Get Cited Recommendations**: e.g., *'What should I buy this week?'* (screened against your persona with citations in INR).\n\n"
+                "Welcome to your Personal Agentic AI Indian-Equity Analyst. You can:\n\n"
+                "1. Follow/Ingest Tickers: Add NSE/BSE stocks like RELIANCE, TCS, HDFCBANK, or INFY to fetch fundamentals & Indian financial news.\n"
+                "2. Ask Grounded Stock Questions: e.g., 'What's the sentiment on TCS this week?' or 'Show me Reliance's debt and dividend metrics'.\n"
+                "3. Train Your Persona: e.g., 'I'm a conservative, dividend-focused investor and I avoid high-debt companies'.\n"
+                "4. Get Cited Recommendations: e.g., 'What should I buy this week?' (screened against your persona with citations in INR).\n\n"
                 "What stock or strategy would you like to explore today?"
             )
             state["citations"] = []
+
 
         return state
 
