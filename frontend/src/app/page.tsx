@@ -66,7 +66,7 @@ export default function DashboardPage() {
       </main>
 
       <footer className="border-t border-slate-900 bg-slate-950/80 py-4 text-center text-xs text-slate-500">
-        <p>Sentellent Full Stack AI SDE Internship Challenge • Deployed on AWS ECS Fargate + RDS PostgreSQL (pgvector)</p>
+        <p>Sentellent Indian-Equity Analyst • Contextual Agentic AI &amp; pgvector RAG</p>
       </footer>
     </div>
   );
