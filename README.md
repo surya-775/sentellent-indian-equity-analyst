@@ -1,7 +1,7 @@
 # Personal Agentic AI Indian-Equity Analyst (RAG)
 ### Sentellent Hiring Challenge — Full Stack AI SDE Intern
 
-[![CI/CD AWS Deployment](https://github.com/sentellent/indian-equity-analyst/actions/workflows/deploy.yml/badge.svg)](https://github.com/sentellent/indian-equity-analyst/actions)
+[![CI/CD AWS Deployment](https://github.com/surya-775/sentellent-indian-equity-analyst/actions/workflows/deploy.yml/badge.svg)](https://github.com/surya-775/sentellent-indian-equity-analyst/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-blue.svg)](https://python.org)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org)
@@ -9,6 +9,14 @@
 [![PostgreSQL pgvector](https://img.shields.io/badge/Vector%20Store-pgvector-blue.svg)](https://github.com/pgvector/pgvector)
 
 An autonomous, production-grade **Equity Research Chief of Staff for the NSE / BSE** that runs in the cloud, ingests real-time Indian fundamentals & news into a vector database, dynamically learns the investor's persona, and generates strictly grounded, cited recommendations in **INR (₹)** with zero hallucinations.
+
+---
+
+## 🌐 Live AWS Production Endpoints
+- **Live Web Application (Next.js Dashboard)**: [http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com](http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com)
+- **FastAPI Backend Health API**: [http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com/api/health](http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com/api/health)
+- **Interactive OpenAPI Documentation**: [http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com/docs](http://indian-equity-analyst-alb-1057081145.ap-south-1.elb.amazonaws.com/docs)
+- **GitHub Repository**: [https://github.com/surya-775/sentellent-indian-equity-analyst](https://github.com/surya-775/sentellent-indian-equity-analyst)
 
 ---
 
@@ -191,12 +199,16 @@ Run the backend test suite:
 pytest backend/tests -v
 ```
 
-Verified test suite:
+Verified test suite (9 / 9 Passing):
 - `test_persona_rule_extraction`: Asserts conversational extraction of risk profile and debt rules.
 - `test_persona_screening_out_high_debt`: Verifies that high-debt stocks are algorithmically excluded.
 - `test_anti_hallucination_on_unknown_stock`: Validates that queries for unindexed stocks return the strict *"I don't have that in the ingested data"* guardrail.
 - `test_ingestion_idempotency_and_deduplication`: Validates that repeated ingestions do not duplicate articles or corrupt state.
 - `test_sentiment_and_event_extraction`: Confirms NLP tagging of financial events and sentiment impact.
+- `test_whitelisted_test_user_allowed`: Confirms Sentellent test users (`harisankar@sentellent.com`, `naga@sentellent.com`) are authenticated seamlessly.
+- `test_arbitrary_unverified_email_strictly_rejected`: Validates strict rejection (HTTP 401) of unverified random emails without Google OAuth token.
+- `test_invalid_google_token_rejected`: Rejects forged or expired Google OAuth tokens.
+- `test_verified_google_token_accepted`: Verifies cryptographic token authentication with Google OAuth API.
 
 ---
 
