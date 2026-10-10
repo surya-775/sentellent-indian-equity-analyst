@@ -8,26 +8,11 @@ resource "aws_db_subnet_group" "rds" {
   }
 }
 
-# RDS Parameter Group with pgvector configuration
-resource "aws_db_parameter_group" "pgvector_pg" {
-  name   = "${var.app_name}-pg15-param-group"
-  family = "postgres15"
-
-  parameter {
-    name  = "shared_preload_libraries"
-    value = "vector"
-  }
-
-  tags = {
-    Name = "${var.app_name}-pg15-param-group"
-  }
-}
-
-# Amazon RDS PostgreSQL Instance
+# Amazon RDS PostgreSQL Instance (pgvector supported out of the box in Postgres 15+)
 resource "aws_db_instance" "postgres" {
   identifier             = "${var.app_name}-postgres"
   engine                 = "postgres"
-  engine_version         = "15.4"
+  engine_version         = "15.13"
   instance_class         = var.db_instance_class
   allocated_storage      = 20
   max_allocated_storage  = 100
@@ -39,7 +24,6 @@ resource "aws_db_instance" "postgres" {
   
   db_subnet_group_name   = aws_db_subnet_group.rds.name
   vpc_security_group_ids = [aws_security_group.rds.id]
-  parameter_group_name   = aws_db_parameter_group.pgvector_pg.name
 
   skip_final_snapshot    = true
   publicly_accessible    = false

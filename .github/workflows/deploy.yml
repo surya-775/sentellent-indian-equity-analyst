@@ -3,15 +3,10 @@ name: Deploy Indian Equity Analyst to AWS
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
-permissions:
-  contents: read
-  id-token: write
+  workflow_dispatch:
 
 env:
-  AWS_REGION: ap-south-1 # Mumbai
+  AWS_REGION: ap-south-1
   APP_NAME: indian-equity-analyst
 
 jobs:
@@ -52,7 +47,6 @@ jobs:
   deploy-to-aws:
     name: Build Containers & Deploy to AWS ECS Fargate
     needs: test-and-validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
@@ -90,13 +84,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Deploy Terraform Infrastructure
+      - name: Deploy and Scale ECS Fargate Services
         run: |
-          cd terraform
-          terraform init
-          terraform apply -auto-approve
-
-      - name: Trigger Rolling Update on ECS Fargate
-        run: |
-          aws ecs update-service --cluster ${{ env.APP_NAME }}-cluster --service ${{ env.APP_NAME }}-backend-service --force-new-deployment --region ${{ env.AWS_REGION }}
-          aws ecs update-service --cluster ${{ env.APP_NAME }}-cluster --service ${{ env.APP_NAME }}-frontend-service --force-new-deployment --region ${{ env.AWS_REGION }}
+          aws ecs update-service --cluster ${{ env.APP_NAME }}-cluster --service ${{ env.APP_NAME }}-backend-service --desired-count 1 --force-new-deployment --region ${{ env.AWS_REGION }}
+          aws ecs update-service --cluster ${{ env.APP_NAME }}-cluster --service ${{ env.APP_NAME }}-frontend-service --desired-count 1 --force-new-deployment --region ${{ env.AWS_REGION }}

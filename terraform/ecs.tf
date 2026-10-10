@@ -153,7 +153,7 @@ resource "aws_ecs_service" "backend" {
   name            = "${var.app_name}-backend-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.backend.arn
-  desired_count   = 1
+  desired_count   = 0
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -168,6 +168,10 @@ resource "aws_ecs_service" "backend" {
     container_port   = 8000
   }
 
+  lifecycle {
+    ignore_changes = [desired_count, task_definition]
+  }
+
   depends_on = [aws_lb_listener_rule.api_routing]
 }
 
@@ -176,7 +180,7 @@ resource "aws_ecs_service" "frontend" {
   name            = "${var.app_name}-frontend-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.frontend.arn
-  desired_count   = 1
+  desired_count   = 0
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -189,6 +193,10 @@ resource "aws_ecs_service" "frontend" {
     target_group_arn = aws_lb_target_group.frontend.arn
     container_name   = "frontend"
     container_port   = 3000
+  }
+
+  lifecycle {
+    ignore_changes = [desired_count, task_definition]
   }
 
   depends_on = [aws_lb_listener.http]
