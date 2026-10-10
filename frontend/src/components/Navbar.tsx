@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { TrendingUp, User, LogOut, CheckCircle2 } from "lucide-react";
+import { API_BASE } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -29,7 +30,7 @@ export default function Navbar() {
     }
 
     // Initialize Google Identity Services
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "109238216587-ffc49oltd5sfts2h20i8tgv0ie5849ja.apps.googleusercontent.com";
     if (typeof window !== "undefined" && window.google && clientId) {
       try {
         window.google.accounts.id.initialize({
@@ -53,7 +54,7 @@ export default function Navbar() {
 
   const handleGoogleCredentialResponse = async (response: any) => {
     try {
-      const res = await fetch("http://localhost:8000/api/auth/google", {
+      const res = await fetch(`${API_BASE}/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_token: response.credential }),
