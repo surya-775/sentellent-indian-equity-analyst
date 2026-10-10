@@ -14,10 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <head>
-        <Script src="https://accounts.google.com/gsi/client" strategy="beforeInteractive" />
-      </head>
       <body className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         {children}
       </body>
     </html>
