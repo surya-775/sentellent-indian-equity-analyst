@@ -107,13 +107,9 @@ export default function Navbar() {
 
           {user ? (
             <div className="flex items-center space-x-3 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs">
-              {user.avatar_url ? (
-                <img src={user.avatar_url} alt={user.name} className="h-6 w-6 rounded-full" />
-              ) : (
-                <div className="h-6 w-6 rounded-full bg-emerald-600 flex items-center justify-center text-white">
-                  <User className="h-3.5 w-3.5" />
-                </div>
-              )}
+              <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-xs shadow-md shadow-emerald-500/20 shrink-0">
+                {(user.name || user.email || "U").trim().charAt(0).toUpperCase()}
+              </div>
               <div className="hidden md:block text-left">
                 <span className="font-medium text-slate-100 block leading-tight">{user.name}</span>
                 <span className="text-[10px] text-slate-400">{user.email}</span>
